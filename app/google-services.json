@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "682981866270",
+    "firebase_url": "https://alpha-cogn.firebaseio.com",
+    "project_id": "alpha-cogn",
+    "storage_bucket": "alpha-cogn.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:682981866270:android:aadb6117b8ce0dc6",
+        "android_client_info": {
+          "package_name": "iit_dhanbad.teamrocket.alpha_cogn"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "682981866270-4g4bv2eqemt96at3gu1di96uicmdsp2c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "iit_dhanbad.teamrocket.alpha_cogn",
+            "certificate_hash": "B5D33242C6B48BE700035782CC4CE4A7E0C504E3"
+          }
+        },
+        {
+          "client_id": "682981866270-5g7g6univduu4q5sp7i17u0sb1b13t5h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAPdsmixKC1Bvqn-T6F18vY6hcaOQrRf4c"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "682981866270-5g7g6univduu4q5sp7i17u0sb1b13t5h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
