@@ -24,7 +24,7 @@ public class Const {
     public static final String completion = "completion";
     public static final String id_pref = "id";
     public static final String email_id_pref = "email";
-    public static final String profile_pic_pref = "profile_pic";
-    public static final String registering_year = "registering year";
+    public static final String lat = "lat";
+    public static final String lng = "lng";
     public static final String PLACE_DETAIL_BASE = "";
 }

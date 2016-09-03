@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?><!-- the parent view - provides the gray listfragment background color -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#00000000"
+    android:paddingLeft="3dp"
+    android:paddingRight="3dp"
+    android:paddingTop="3dp">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="@dimen/tab"
+        app:cardCornerRadius="5dp">
+
+        <!-- the innner view - provides the white rectangle -->
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical">
+
+
+            <!-- the container view for the title and description -->
+            <RelativeLayout
+                android:id="@+id/relativeLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true">
+
+                <!-- the title view -->
+                <TextView
+                    android:id="@+id/Name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/tab"
+                    android:layout_marginTop="@dimen/tab_horizontal"
+                    android:maxLines="2"
+                    android:text="Dr Name"
+                    android:textAppearance="@android:style/TextAppearance.Medium" />
+
+                <!-- the description view -->
+                <TextView
+                    android:id="@+id/Specification"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/Name"
+                    android:layout_marginBottom="@dimen/tab_horizontal"
+                    android:layout_marginLeft="@dimen/tab"
+                    android:text="specification"
+                    android:textAppearance="@android:style/TextAppearance.Small" />
+
+                <LinearLayout
+                    android:id="@+id/ads_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/Specification"
+
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/ads_list_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/tab_horizontal"
+                        android:layout_marginLeft="@dimen/tab"
+                        android:layout_marginRight="@dimen/tab"
+                        android:layout_marginTop="@dimen/tab_horizontal"
+                        android:text="Ads text"
+                        android:textColor="@color/white" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/place"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/ads_list"
+                    android:layout_marginLeft="@dimen/tab"
+                    android:maxLines="2"
+                    android:text="Place"
+                    android:textAppearance="@android:style/TextAppearance.Small" />
+
+                <LinearLayout
+                    android:id="@+id/details"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/place"
+                    android:layout_marginLeft="10dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/exp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="5 years . "
+
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/fee"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=" $500 . "
+                        android:visibility="gone" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/ads"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_margin="@dimen/tab_horizontal"
+                    android:background="@color/ads"
+                    android:text="Ad"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:visibility="gone" />
+            </RelativeLayout>
+
+            <Button
+                android:id="@+id/book_appointment"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_gravity="right"
+                android:layout_marginRight="@dimen/tab_horizontal"
+                android:background="@color/colorAccent"
+                android:text="Book"
+                android:textColor="@color/white"
+                android:visibility="visible" />
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+
+</RelativeLayout>

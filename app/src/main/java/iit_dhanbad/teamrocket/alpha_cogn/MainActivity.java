@@ -1,6 +1,8 @@
 package iit_dhanbad.teamrocket.alpha_cogn;
 
 import android.Manifest;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -11,6 +13,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView.OnNavigationItemSelectedListener;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -45,9 +48,19 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -56,9 +69,9 @@ import iit_dhanbad.teamrocket.alpha_cogn.utils.InternetConnectionDetector;
 import iit_dhanbad.teamrocket.alpha_cogn.utils.PermissionUtils;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener , GoogleMap.OnMyLocationButtonClickListener,
+        implements OnNavigationItemSelectedListener , GoogleMap.OnMyLocationButtonClickListener,
         OnMapReadyCallback, GoogleMap.OnMarkerDragListener,
-        ActivityCompat.OnRequestPermissionsResultCallback, View.OnClickListener{
+        ActivityCompat.OnRequestPermissionsResultCallback, View.OnClickListener,Activity_List.ActivityListComm{
 
     LatLng mylatlng;
     Marker myMarker;
@@ -66,9 +79,9 @@ public class MainActivity extends AppCompatActivity
     Button searchThisArea;
     double  minlat, maxlat, minlng, maxlng;
     private ProgressDialog pDialog;
-    boolean moveCamera,isList;
+    boolean moveCamera,isList,fromFilter;
     InternetConnectionDetector internetConnectionDetector;
-    String url;
+    String url,mApiResponse;
     private HashMap<String, Marker> mPlaceIdAnd = new HashMap<>();
     private static final String MAP_FRAGMENT_TAG = "map";
     /**
@@ -111,26 +124,33 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        MapFragment mapFragment = (MapFragment)
-                getFragmentManager().findFragmentByTag(MAP_FRAGMENT_TAG);
-        if (mapFragment == null) {
+        if (!isList) {
+            MapFragment mapFragment = (MapFragment)
+                    getFragmentManager().findFragmentByTag(MAP_FRAGMENT_TAG);
+            if (mapFragment == null) {
 
-            mapFragment = MapFragment.newInstance();
+                mapFragment = MapFragment.newInstance();
 
-            FragmentTransaction fragmentTransaction =
-                    getFragmentManager().beginTransaction();
-            fragmentTransaction.add(R.id.map, mapFragment, MAP_FRAGMENT_TAG);
-            fragmentTransaction.commit();
+                FragmentTransaction fragmentTransaction =
+                        getFragmentManager().beginTransaction();
+                fragmentTransaction.add(R.id.map, mapFragment, MAP_FRAGMENT_TAG);
+                fragmentTransaction.commit();
+            }
+            mapFragment.getMapAsync(this);
         }
-        mapFragment.getMapAsync(this);
+        if (isList) {
+            setApi();
+            setListFragment(true);
+        }
     }
     public void defaultVal(){
 
-       // mylatlng = new LatLng(28.489143,77.0737036);
-        mylatlng = new LatLng(20.0,79.0);
+        mylatlng = new LatLng(28.489143,77.0737036);
+       // mylatlng = new LatLng(20.0,79.0);
         moveCamera = false;
         mMap = null;
         isList = false;
+        fromFilter  =false;
     }
     private void bindViews() {
 
@@ -162,12 +182,32 @@ public class MainActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.action_map) {
+            if (internetConnectionDetector.isConnectingToInternet()) {
+                if (isList) {
+                    item.setTitle("List");
+                    isList = false;
+                } else {
+                    item.setTitle("Map");
+                    isList = true;
+                }
+                //setApi(isGeneralFilter);
+                setListFragment(isList);
+                setList();
+            } else {
+                Toast.makeText(this, "No Internet connection", Toast.LENGTH_LONG).show();
+            }
         }
-
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void setList() {
+        Activity_List fragment = (Activity_List) getFragmentManager().findFragmentById(R.id.list);
+        if (fragment != null) {
+            fragment.showPlacesList(mApiResponse);
+        }
+        searchThisArea.setVisibility(View.GONE);
     }
     /**
      * Displays a dialog with error message explaining that the location permission is missing.
@@ -349,6 +389,7 @@ public class MainActivity extends AppCompatActivity
                     myMarker = mMap.addMarker(new MarkerOptions()
                             .position(mylatlng)
                             .title("Your location")
+                            .icon(BitmapDescriptorFactory.defaultMarker(40))
                             .snippet("you can drag it")
                             .draggable(true));
                     moveCamera = false;
@@ -373,7 +414,7 @@ public class MainActivity extends AppCompatActivity
             searchThisArea.setVisibility(View.GONE);
             if (pDialog == null) {
                 pDialog = new ProgressDialog(this);
-                pDialog.setMessage("Fetching Clinics around You");
+                pDialog.setMessage("Fetching Activities around You");
                 pDialog.setCancelable(true);
                 pDialog.show();
             }
@@ -381,7 +422,7 @@ public class MainActivity extends AppCompatActivity
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
-
+                            mApiResponse  =response;
                             try {
                                 JSONObject jsonObject= new JSONObject(response);
                                 if(jsonObject.getString("status").equals("OK")){
@@ -398,7 +439,7 @@ public class MainActivity extends AppCompatActivity
                                 }*/ else
                                         showPlaces(response);
                                 }else{
-                                    Toast.makeText(getApplicationContext(),"No Clinic Found in 100 Km radius",Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getApplicationContext(),"No Activity Found in 100 Km radius",Toast.LENGTH_LONG).show();
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -426,6 +467,7 @@ public class MainActivity extends AppCompatActivity
         myMarker = mMap.addMarker(new MarkerOptions()
                 .position(new LatLng(mylatlng.latitude, mylatlng.longitude))
                 .title("Your location")
+                .icon(BitmapDescriptorFactory.defaultMarker(40))
                 .snippet("you can drag it")
                 .draggable(true));
         ArrayList<String> temp = new ArrayList<>();
@@ -440,7 +482,14 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void setApi() {
-        url = "";
+
+        if(fromFilter){
+            url = "http://alphacogn.net23.net/get_json_data.php?x_coord=";
+        }else{
+            url = "http://alphacogn.net23.net/get_json_data.php?x_coord=";
+            url+=mylatlng.latitude;
+            url+="&y_coord="+mylatlng.longitude;
+        }
         sendRequest();
 
     }
@@ -520,9 +569,34 @@ public class MainActivity extends AppCompatActivity
                     .build();
 
             mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 50));
+            setList();
+
             // pDialog.dismiss();
         }
 
+
+    }
+    public void setListFragment(Boolean add) {
+
+        if (add) {
+
+            Fragment fragment = new
+                    Activity_List();
+            FragmentManager fragmentManager = getFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            Bundle bundle2 = new Bundle();
+            bundle2.putString("mApi", mApiResponse);
+            fragment.setArguments(bundle2);
+            fragmentTransaction.replace(R.id.list, fragment, "ActivityList");
+            fragmentTransaction.commit();
+        }else{
+            Activity_List fragment = (Activity_List) getFragmentManager().findFragmentById(R.id.list);
+            FragmentManager fragmentManager = getFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.remove(fragment);
+            fragmentTransaction.commit();
+            showPlaces(mApiResponse);
+        }
     }
 
 
