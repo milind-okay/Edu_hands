@@ -1,4 +1,4 @@
-package iit_dhanbad.teamrocket.edu_hands;
+package iit_dhanbad.teamrocket.alpha_cogn;
 
 /**
  * Created by milind on 3/9/16.
@@ -19,7 +19,7 @@ import com.facebook.accountkit.ui.AccountKitActivity;
 import com.facebook.accountkit.ui.AccountKitConfiguration;
 import com.facebook.accountkit.ui.LoginType;
 
-import iit_dhanbad.teamrocket.edu_hands.utils.Const;
+import iit_dhanbad.teamrocket.alpha_cogn.utils.Const;
 
 public class LoginActivity extends AppCompatActivity {
     SharedPreferences preferences;
@@ -77,7 +77,7 @@ public class LoginActivity extends AppCompatActivity {
                 // and pass it to your server and exchange it for an access token.
 
                 // Success! Start your next activity...
-                startActivity(new Intent(LoginActivity.this, HomeActivity.class));
+                startActivity(new Intent(LoginActivity.this, MainActivity.class));
                 AccountKit.getCurrentAccount(new AccountKitCallback<Account>() {
                     @Override
                     public void onSuccess(Account account) {

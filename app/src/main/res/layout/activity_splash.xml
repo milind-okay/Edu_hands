@@ -7,7 +7,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="iit_dhanbad.teamrocket.edu_hands.Splash">
+    tools:context="iit_dhanbad.teamrocket.alpha_cogn.Splash">
 <ImageView
     android:id="@+id/splash"
     android:layout_width="match_parent"

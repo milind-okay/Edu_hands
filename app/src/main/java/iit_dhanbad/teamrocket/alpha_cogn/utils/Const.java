@@ -1,4 +1,4 @@
-package iit_dhanbad.teamrocket.edu_hands.utils;
+package iit_dhanbad.teamrocket.alpha_cogn.utils;
 
 /**
  * Created by milind on 3/9/16.
