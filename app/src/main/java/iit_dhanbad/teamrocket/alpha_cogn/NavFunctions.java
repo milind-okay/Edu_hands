@@ -1,4 +1,4 @@
-package iit_dhanbad;
+package iit_dhanbad.teamrocket.alpha_cogn;
 
 /**
  * Created by milind on 3/9/16.
