@@ -17,6 +17,18 @@
         android:layout_height="match_parent"
 
         android:layout_centerHorizontal="true" />
+    <Button
+        android:id="@+id/search_this_area"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_centerHorizontal="true"
+        android:layout_margin="@dimen/tab_horizontal"
+        android:background="@color/white"
+        android:gravity="center"
+        android:text="SEARCH THIS AREA"
+        android:textColor="@color/colorPrimary"
+        android:visibility="gone" />
     <RelativeLayout
         android:id="@+id/list"
         android:layout_width="match_parent"

@@ -16,4 +16,7 @@
     <dimen name="single_view_margin">10dp</dimen>
     <dimen name="text_bold_size" >20dp</dimen>
     <dimen name="text_margin">15dp</dimen>
+
+    <!--*****Home Activity****************************-->
+    <dimen name="tab_horizontal">10dp</dimen>
 </resources>

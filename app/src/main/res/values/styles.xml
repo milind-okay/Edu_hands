@@ -21,4 +21,21 @@
         <item name="android:minHeight">25dip</item>
         <item name="android:maxHeight">25dip</item>
     </style>
+
+    <!--- faceBook *************************-->
+    <style name="AppTheme.AccountKit" parent="Theme.AccountKit">
+        <item name="com_accountkit_primary_color">@color/colorPrimary</item>
+        <item name="com_accountkit_secondary_text_color">#44566b</item>
+        <item name="com_accountkit_button_text_color">@color/black_semi_transparent</item>
+        <item name="com_accountkit_status_bar_color">@color/colorPrimaryDark</item>
+
+        <item name="com_accountkit_input_background_color">@color/colorPrimary</item>
+        <item name="com_accountkit_button_background_color">?attr/com_accountkit_input_background_color</item>
+        <item name="com_accountkit_input_accent_color">@color/black_semi_transparent</item>
+        <item name="com_accountkit_input_border_color">@color/colorPrimary</item>
+    </style>
+    <style name="NavigationDrawerStyle">
+        <item name="android:typeface">monospace</item>
+    </style>
+
 </resources>

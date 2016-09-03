@@ -3,7 +3,9 @@ package iit_dhanbad.teamrocket.alpha_cogn;
 import android.Manifest;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Typeface;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -23,6 +25,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -96,7 +101,8 @@ public class MainActivity extends AppCompatActivity
                         .setAction("Action", null).show();
             }
         });
-
+        defaultVal();
+        bindViews();
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -117,6 +123,19 @@ public class MainActivity extends AppCompatActivity
             fragmentTransaction.commit();
         }
         mapFragment.getMapAsync(this);
+    }
+    public void defaultVal(){
+
+       // mylatlng = new LatLng(28.489143,77.0737036);
+        mylatlng = new LatLng(20.0,79.0);
+        moveCamera = false;
+        mMap = null;
+        isList = false;
+    }
+    private void bindViews() {
+
+        searchThisArea = (Button) findViewById(R.id.search_this_area);
+        searchThisArea.setOnClickListener(this);
     }
 
     @Override
@@ -201,7 +220,7 @@ public class MainActivity extends AppCompatActivity
     public void onMapReady(GoogleMap map) {
         moveCamera = true;
         mMap = map;
-        // Log.d("onMapready", "okay--");
+         Log.d("onMapready", "okay--");
         mMap.setOnMyLocationButtonClickListener(this);
         mMap.setOnMyLocationChangeListener(myLocationChangeListener());
 
@@ -248,7 +267,14 @@ public class MainActivity extends AppCompatActivity
     }
     @Override
     public void onClick(View v) {
+        switch (v.getId()) {
 
+            case R.id.search_this_area:
+                mylatlng = mMap.getCameraPosition().target;
+                setApi();
+                break;
+            default:
+        }
     }
 
 
@@ -294,6 +320,7 @@ public class MainActivity extends AppCompatActivity
     }
     @Override
     public boolean onMyLocationButtonClick() {
+        moveCamera = true;
         return false;
     }
     private GoogleMap.OnMyLocationChangeListener myLocationChangeListener() {
@@ -301,15 +328,17 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onMyLocationChange(Location location) {
 
-                if (moveCamera) {
+                if (mMap!=null && moveCamera) {
                     mylatlng = new LatLng(location.getLatitude(), location.getLongitude());
 
 
-                    //  Log.d("at movecamera", "true");
+                      Log.d("at movecamera",  mylatlng +" ok");
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mylatlng, 15.0f), new GoogleMap.CancelableCallback() {
                         @Override
                         public void onFinish() {
-                            setApi();
+                            //setApi();
+                            sendRequest();
+                            Log.d("at movecamera",  mylatlng +" ok");
                         }
 
                         @Override
@@ -319,7 +348,6 @@ public class MainActivity extends AppCompatActivity
                     });
                     myMarker = mMap.addMarker(new MarkerOptions()
                             .position(mylatlng)
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker))
                             .title("Your location")
                             .snippet("you can drag it")
                             .draggable(true));
@@ -337,6 +365,7 @@ public class MainActivity extends AppCompatActivity
 /********************end map section*********************************************************/
     private void sendRequest() {
         //  Log.d("at ", "sendRequest");
+         url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=13.19519,77.450507&radius=10000&key=AIzaSyD35_jiedymAHmWp2JcOSkrRJbHRz8TD4c";
         internetConnectionDetector = new InternetConnectionDetector(getApplicationContext());
         if (internetConnectionDetector.isConnectingToInternet()) {
             Log.d("sending request", url);
@@ -398,7 +427,6 @@ public class MainActivity extends AppCompatActivity
                 .position(new LatLng(mylatlng.latitude, mylatlng.longitude))
                 .title("Your location")
                 .snippet("you can drag it")
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker))
                 .draggable(true));
         ArrayList<String> temp = new ArrayList<>();
         temp.add("m");

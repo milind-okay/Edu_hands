@@ -13,4 +13,9 @@
     <string name="location_permission_denied">This application requires location permission to enable the \'search by your location\' layer. Please try again and grant access to use the location.\nIf the permission has been permanently denied, it can be enabled from the System Settings.</string>
     <string name="permission_required_toast">Location permission is required to search by your location.</string>
     <!--************************************************************************************************************-->
+    <!--Facebook auth*********************************-->
+    <string name="facebook_app_id">228261644178451</string>
+    <string name="ACCOUNT_KIT_CLIENT_TOKEN">c44576b1fdf0e1da910e7c775092feff</string>
+    <!---*************************************************-->
+    <string name="google_maps_key">AIzaSyDkbwcgLTQsAAYGMt4gqYlZG5TvuvonXQ4</string>
 </resources>
