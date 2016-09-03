@@ -21,8 +21,8 @@
                 <com.elth.care.myhealth.utils.CustomTextView android:id="@+id/authorName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/doctor_tab"
-                    android:layout_marginTop="@dimen/doctor_tab"
+                    android:layout_marginLeft="@dimen/my_tab"
+                    android:layout_marginTop="@dimen/my_tab"
                     android:textAppearance="@android:style/TextAppearance.Medium" />
 
                 <!-- the description view -->
@@ -31,7 +31,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
 
-                    android:layout_marginLeft="@dimen/doctor_tab"
+                    android:layout_marginLeft="@dimen/my_tab"
                     android:textAppearance="@android:style/TextAppearance.Small" />
 
 

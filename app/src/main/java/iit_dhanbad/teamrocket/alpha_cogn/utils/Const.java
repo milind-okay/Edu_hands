@@ -26,4 +26,5 @@ public class Const {
     public static final String email_id_pref = "email";
     public static final String profile_pic_pref = "profile_pic";
     public static final String registering_year = "registering year";
+    public static final String PLACE_DETAIL_BASE = "";
 }
