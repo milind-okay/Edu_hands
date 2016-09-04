@@ -17,7 +17,7 @@ public class Places {
     public List<HashMap<String, String>> parse(JSONObject jsonObject) {
         JSONArray jsonArray = null;
         try {
-            jsonArray = jsonObject.getJSONArray("results");
+            jsonArray = jsonObject.getJSONArray("server_response");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -48,25 +48,34 @@ public class Places {
         String latitude = "";
         String longitude = "";
         String reference = "";
-
+        String rating = "";
+        String fee = "";
         try {
             if (!googlePlaceJson.isNull("name")) {
                 placeName = googlePlaceJson.getString("name");
             }
-            if (!googlePlaceJson.isNull("vicinity")) {
-                vicinity = googlePlaceJson.getString("vicinity");
+            if (!googlePlaceJson.isNull("topic")) {
+                vicinity = googlePlaceJson.getString("topic");
             }
-            latitude = googlePlaceJson.getJSONObject("geometry").getJSONObject("location").getString("lat");
-            longitude = googlePlaceJson.getJSONObject("geometry").getJSONObject("location").getString("lng");
-            reference = googlePlaceJson.getString("place_id");
-            googlePlaceMap.put("place_name", placeName);
+            if (!googlePlaceJson.isNull("learning_level")) {
+                rating = googlePlaceJson.getString("learning_level");
+            }
+            if (!googlePlaceJson.isNull("fee")) {
+                rating = googlePlaceJson.getString("fee");
+            }
+            latitude = googlePlaceJson.getString("x_coord");
+            longitude = googlePlaceJson.getString("y_coord");
+            reference = googlePlaceJson.getString("user_id");
+            googlePlaceMap.put("rating",rating);
+            googlePlaceMap.put("fee",fee);
+            googlePlaceMap.put("name", placeName);
+            googlePlaceMap.put("subject", googlePlaceJson.getString("subject"));
             googlePlaceMap.put("vicinity", vicinity);
             googlePlaceMap.put("lat", latitude);
             googlePlaceMap.put("lng", longitude);
             googlePlaceMap.put("reference", reference);
-            googlePlaceMap.put("type", googlePlaceJson.getString("type"));
-            googlePlaceMap.put("hcid", googlePlaceJson.getString("hcid"));
-            googlePlaceMap.put("ad", googlePlaceJson.getString("ad"));
+
+
         } catch (JSONException e) {
             e.printStackTrace();
         }

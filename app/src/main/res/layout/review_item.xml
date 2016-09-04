@@ -18,7 +18,7 @@
                 android:id="@+id/relativeLayout">
 
                 <!-- the title view -->
-                <com.elth.care.myhealth.utils.CustomTextView android:id="@+id/authorName"
+                <TextView android:id="@+id/authorName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/my_tab"
@@ -26,7 +26,7 @@
                     android:textAppearance="@android:style/TextAppearance.Medium" />
 
                 <!-- the description view -->
-                <com.elth.care.myhealth.utils.CustomTextView android:id="@+id/reviewText"
+                <TextView android:id="@+id/reviewText"
                     android:layout_below="@id/authorName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

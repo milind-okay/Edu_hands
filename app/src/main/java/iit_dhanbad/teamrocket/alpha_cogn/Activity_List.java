@@ -104,11 +104,11 @@ Activity_List extends ListFragment {
             if (list != null)
                 for (int i = 0; i < list.size(); i++) {
                     HashMap<String, String> googlePlace = list.get(i);
-                    String placeName = googlePlace.get("place_name");
+                    String placeName = googlePlace.get("name");
                     String vicinity = googlePlace.get("vicinity");
                     Log.d("rating", googlePlace.get("rating") + 3);
-                    mItems.add(new ActivityListViewItem(placeName, specialtyValue, vicinity, googlePlace.get("reference"),
-                            " ", " ", " ", googlePlace.get("type"), googlePlace.get("ad")));
+                    mItems.add(new ActivityListViewItem(placeName,  googlePlace.get("subject"), vicinity, googlePlace.get("reference"),
+                            googlePlace.get("rating"), googlePlace.get("fee"),googlePlace.get("fee"), "", ""));
                     adapter = new ActivityListViewAdapter(getActivity(), mItems);
                     setListAdapter(adapter);
 

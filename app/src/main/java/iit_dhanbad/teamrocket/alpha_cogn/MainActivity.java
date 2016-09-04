@@ -376,8 +376,8 @@ public class MainActivity extends AppCompatActivity
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mylatlng, 15.0f), new GoogleMap.CancelableCallback() {
                         @Override
                         public void onFinish() {
-                            //setApi();
-                            sendRequest();
+                            setApi();
+
                             Log.d("at movecamera",  mylatlng +" ok");
                         }
 
@@ -406,7 +406,7 @@ public class MainActivity extends AppCompatActivity
 /********************end map section*********************************************************/
     private void sendRequest() {
         //  Log.d("at ", "sendRequest");
-         url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=13.19519,77.450507&radius=10000&key=AIzaSyD35_jiedymAHmWp2JcOSkrRJbHRz8TD4c";
+         //url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=13.19519,77.450507&radius=10000&key=AIzaSyD35_jiedymAHmWp2JcOSkrRJbHRz8TD4c";
         internetConnectionDetector = new InternetConnectionDetector(getApplicationContext());
         if (internetConnectionDetector.isConnectingToInternet()) {
             Log.d("sending request", url);
@@ -423,9 +423,10 @@ public class MainActivity extends AppCompatActivity
                         @Override
                         public void onResponse(String response) {
                             mApiResponse  =response;
+                            Log.d("resposne",response);
                             try {
                                 JSONObject jsonObject= new JSONObject(response);
-                                if(jsonObject.getString("status").equals("OK")){
+
                                     if (isList) {/**TODO check listview
                                         ListView fragment = (ListView) getFragmentManager().findFragmentById(R.id.list);
                                         if (fragment != null) {
@@ -438,9 +439,7 @@ public class MainActivity extends AppCompatActivity
                                     e.printStackTrace();
                                 }*/ else
                                         showPlaces(response);
-                                }else{
-                                    Toast.makeText(getApplicationContext(),"No Activity Found in 100 Km radius",Toast.LENGTH_LONG).show();
-                                }
+
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -529,7 +528,7 @@ public class MainActivity extends AppCompatActivity
                     HashMap<String, String> googlePlace = list.get(i);
                     double lat = Double.parseDouble(googlePlace.get("lat"));
                     double lng = Double.parseDouble(googlePlace.get("lng"));
-                    String placeName = googlePlace.get("place_name");
+                    String placeName = googlePlace.get("subject");
                     String vicinity = googlePlace.get("vicinity");
                     LatLng latLng = new LatLng(lat, lng);
                     markerOptions.position(latLng);
