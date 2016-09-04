@@ -11,9 +11,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 import iit_dhanbad.teamrocket.alpha_cogn.R;
+import iit_dhanbad.teamrocket.alpha_cogn.user.UserProfile;
 import iit_dhanbad.teamrocket.alpha_cogn.utils.Const;
 
 public class NavFunctions extends AppCompatActivity {
@@ -46,6 +48,11 @@ public class NavFunctions extends AppCompatActivity {
                 c.startActivity(new Intent(Intent.ACTION_VIEW,
                         Uri.parse("http://play.google.com/store/apps/details?id=" + c.getPackageName())));
             }
+        }
+        if (id == R.id.subject) {
+            Bundle bundle = new Bundle();
+            Intent intent = new Intent(c, SelectSubject.class);
+           c.startActivity(intent);
         }
 
         if (id == R.id.nav_rate) {

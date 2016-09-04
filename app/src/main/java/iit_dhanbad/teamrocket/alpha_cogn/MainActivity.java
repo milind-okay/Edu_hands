@@ -65,6 +65,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import iit_dhanbad.teamrocket.alpha_cogn.user.UserProfile;
 import iit_dhanbad.teamrocket.alpha_cogn.utils.InternetConnectionDetector;
 import iit_dhanbad.teamrocket.alpha_cogn.utils.PermissionUtils;
 
@@ -81,7 +82,7 @@ public class MainActivity extends AppCompatActivity
     private ProgressDialog pDialog;
     boolean moveCamera,isList,fromFilter;
     InternetConnectionDetector internetConnectionDetector;
-    String url,mApiResponse;
+    String url,mApiResponse,subject;
     private HashMap<String, Marker> mPlaceIdAnd = new HashMap<>();
     private static final String MAP_FRAGMENT_TAG = "map";
     /**
@@ -105,15 +106,14 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        Bundle extras = getIntent().getExtras();
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        if (extras != null) {
+            subject = extras.getString("subject", "null");
+
+            fromFilter = true;
+
+        }
         defaultVal();
         bindViews();
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -150,7 +150,7 @@ public class MainActivity extends AppCompatActivity
         moveCamera = false;
         mMap = null;
         isList = false;
-        fromFilter  =false;
+
     }
     private void bindViews() {
 
@@ -197,6 +197,9 @@ public class MainActivity extends AppCompatActivity
             } else {
                 Toast.makeText(this, "No Internet connection", Toast.LENGTH_LONG).show();
             }
+        }else{
+            Intent intent = new Intent(this, FilterActivites.class);
+           startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -481,13 +484,11 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void setApi() {
-
-        if(fromFilter){
-            url = "http://alphacogn.net23.net/get_json_data.php?x_coord=";
-        }else{
-            url = "http://alphacogn.net23.net/get_json_data.php?x_coord=";
-            url+=mylatlng.latitude;
-            url+="&y_coord="+mylatlng.longitude;
+        url = "http://alphacogn.net23.net/get_json_data.php?x_coord=";
+        url+=mylatlng.latitude;
+        url+="&y_coord="+mylatlng.longitude;
+        if(fromFilter) {
+            url+="&subject="+subject;
         }
         sendRequest();
 

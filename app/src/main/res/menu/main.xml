@@ -5,6 +5,10 @@
         android:id="@+id/action_map"
         android:orderInCategory="100"
         android:title="List"
-
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_filter"
+        android:orderInCategory="100"
+        android:title="Filter"
         app:showAsAction="ifRoom" />
 </menu>

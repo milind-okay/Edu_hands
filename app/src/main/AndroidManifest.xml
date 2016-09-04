@@ -51,7 +51,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="iit_dhanbad.teamrocket.alpha_cogn.LoginActivity" />
         </activity>
-        <activity android:name=".FilterActivites"></activity>
+        <activity android:name=".FilterActivites" />
+        <activity android:name=".SelectSubject"></activity>
+        <activity android:name=".user.UserProfile"></activity>
     </application>
 
 </manifest>

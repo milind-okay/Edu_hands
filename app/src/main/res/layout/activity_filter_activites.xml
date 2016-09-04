@@ -42,12 +42,14 @@
                 android:inputType="textEmailAddress"
                 android:maxLines="1"
                 android:nextFocusDown="@+id/b_completion"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:visibility="gone"/>
 
 
 
         </android.support.design.widget.TextInputLayout>
         <Button
+            android:id="@+id/submit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Submit"/>

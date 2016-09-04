@@ -20,7 +20,7 @@ public class UserBasicInfo extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "name";
     private static final String ARG_PARAM2 = "address";
-    String mName,mAddress;
+    String mName ="MAr",mAddress=" sdasd";
     TextView name,nameValue,address,addressValue;
 
     public UserBasicInfo() {

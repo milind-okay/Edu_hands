@@ -26,6 +26,12 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
@@ -36,6 +42,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import iit_dhanbad.teamrocket.alpha_cogn.PlaceDetailsParser;
+import iit_dhanbad.teamrocket.alpha_cogn.Places;
 import iit_dhanbad.teamrocket.alpha_cogn.R;
 import iit_dhanbad.teamrocket.alpha_cogn.utils.Const;
 import iit_dhanbad.teamrocket.alpha_cogn.utils.InternetConnectionDetector;
@@ -44,37 +51,27 @@ public class UserProfile extends AppCompatActivity implements TabFragment.OnList
 
     float mRating;
     ImageLoader imageLoader;
-    public String PLACE_ID;
+    public String PLACE_ID,url;
     String user_image, default_google_image = "https://maps.gstatic.com/mapfiles/place_api/icons/generic_business-71.png";
     public String mName, mAddress, mPhone, mInterPhone, mEmail, mWebsite, mReview;
     ArrayList<String> mWeekDays = new ArrayList<>();
-    private String KEY = "&key=AIzaSyD35_jiedymAHmWp2JcOSkrRJbHRz8TD4c";
+
 
     ImageView userImage, userBackgroundImage;
     SharedPreferences sharedPreferences;
     InternetConnectionDetector internetConnectionDetector;
-
+    GoogleMap mMap;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             PLACE_ID = extras.getString("place_id");
             // Log.d("place_id", PLACE_ID);
-            sendRequest();
+            sendRequest("review");
         }
         userImage = (ImageView) findViewById(R.id.userImage);
         userBackgroundImage = (ImageView) findViewById(R.id.backgroundImage);
@@ -88,8 +85,7 @@ public class UserProfile extends AppCompatActivity implements TabFragment.OnList
         if (!imageLoader.isInited()) {
             imageLoader.init(ImageLoaderConfiguration.createDefault(getApplicationContext()));
         }*/
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setVisibility(View.GONE);
+
     }
 
     protected void setupViewPager(ViewPager viewPager) {
@@ -108,7 +104,7 @@ public class UserProfile extends AppCompatActivity implements TabFragment.OnList
         Bundle bundle1 = new Bundle();
         bundle1.putString("name", mName);
         bundle1.putString("address", mAddress);
-        bundle1.putString("phone_number", mPhone);
+        bundle1.putString("phone_number","+918877006184");
         //  bundle1.putString("international_phone_number", mInterPhone);
         // bundle1.putString("email", mEmail);
         //  bundle1.putString("website", mWebsite);
@@ -116,7 +112,7 @@ public class UserProfile extends AppCompatActivity implements TabFragment.OnList
 
         adapter.addFragment(userContactInfo, "Profile");
 
-        addAvailabilityFragment(adapter);
+        addActivitiesFragment(adapter);
 
         RateAndReviewInfo userRateAndReviewInfo = new RateAndReviewInfo();
         Bundle bundle2 = new Bundle();
@@ -129,12 +125,12 @@ public class UserProfile extends AppCompatActivity implements TabFragment.OnList
         viewPager.setAdapter(adapter);
     }
 
-    protected void addAvailabilityFragment(ViewPagerAdapter adapter) {
+    protected void addActivitiesFragment(ViewPagerAdapter adapter) {
         UserActivities userActivities = new UserActivities();
         Bundle bundle3 = new Bundle();
         bundle3.putStringArrayList("week_text", mWeekDays);
         userActivities.setArguments(bundle3);
-        adapter.addFragment(userActivities, "Availability");
+        adapter.addFragment(userActivities, "subjects");
     }
 
 
@@ -173,19 +169,30 @@ public class UserProfile extends AppCompatActivity implements TabFragment.OnList
         }
     }
 
-    private void sendRequest() {
-
+    private void sendRequest(final String item) {
+        if(item.equals("review")){
+            url = "http://alphacogn.net23.net/reviews.php?user_id="+PLACE_ID;
+        }else{
+            url = "http://alphacogn.net23.net/teacher_profile.php?user_id="+PLACE_ID;
+        }
         internetConnectionDetector = new InternetConnectionDetector(getApplicationContext());
         if (internetConnectionDetector.isConnectingToInternet()) {
-            Log.d("place-Detail", Const.PLACE_DETAIL_BASE + PLACE_ID );
-            StringRequest stringRequest = new StringRequest(Const.PLACE_DETAIL_BASE + PLACE_ID,
+            Log.d("place-Detail", url );
+            StringRequest stringRequest = new StringRequest(url,
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
                             //  Toast.makeText(getActivity().getApplicationContext(),response,Toast.LENGTH_LONG).show();
                             // Log.d("Server response...<>>", response);
-                            ParserTask parserTask = new ParserTask();
-                            parserTask.execute(response);
+                            if(item.equals("review")){
+                                mReview = response;
+                                sendRequest("hh");
+                            }else{
+                            MapPlacesDisplayTask placesDisplayTask = new MapPlacesDisplayTask();
+                            Object[] toPass = new Object[2];
+                            toPass[0] = mMap;
+                            toPass[1] = response;
+                            placesDisplayTask.execute(toPass);}
 
                         }
                     },
@@ -204,11 +211,57 @@ public class UserProfile extends AppCompatActivity implements TabFragment.OnList
         }
 
     }
+    public class MapPlacesDisplayTask extends AsyncTask<Object, Integer, List<HashMap<String, String>>> {
 
+        JSONObject googlePlacesJson;
+        GoogleMap googleMap;
+
+        @Override
+        protected List<HashMap<String, String>> doInBackground(Object... inputObj) {
+
+            List<HashMap<String, String>> googlePlacesList = null;
+            Places placeJsonParser = new Places();
+            try {
+                googleMap = (GoogleMap) inputObj[0];
+                googlePlacesJson = new JSONObject((String) inputObj[1]);
+                googlePlacesList = placeJsonParser.parse(googlePlacesJson);
+            } catch (Exception e) {
+                //    Log.d("Exception", e.toString());
+            }
+            return googlePlacesList;
+        }
+
+        @Override
+        protected void onPostExecute(List<HashMap<String, String>> list) {
+            //  googleMap.clear();
+
+
+            // mMarkerHash.clear();
+            if (list != null)
+                for (int i = 0; i < list.size(); i++) {
+
+                    HashMap<String, String> googlePlace = list.get(i);
+                    double lat = Double.parseDouble(googlePlace.get("lat"));
+                    double lng = Double.parseDouble(googlePlace.get("lng"));
+                    mAddress = googlePlace.get("subject");
+                    String vicinity = googlePlace.get("vicinity");
+                    mName = googlePlace.get("name");
+                    mRating = Float.parseFloat(googlePlace.get("rating"));
+                    // pDialog.dismiss();
+                }
+            ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
+            setupViewPager(viewPager);
+            TabLayout tabLayout = (TabLayout) findViewById(R.id.user_tab_layout);
+            assert tabLayout != null;
+            tabLayout.setupWithViewPager(viewPager);
+
+
+        }
+    }
     /**
      * A class to parse the Google Place Details in JSON format
      */
-    private class ParserTask extends AsyncTask<String, Integer, HashMap<String, String>> {
+   /* private class ParserTask extends AsyncTask<String, Integer, HashMap<String, String>> {
 
         JSONObject jObject;
 
@@ -239,24 +292,20 @@ public class UserProfile extends AppCompatActivity implements TabFragment.OnList
                     .cacheOnDisc()
                     .build();
             mName = hPlaceDetails.get("name");
-            user_image = hPlaceDetails.get("icon");
+
             //  Log.d("user_image",user_image);
         /*    if (!user_image.equals(default_google_image))
                 imageLoader.displayImage(user_image, userImage, options);*/
-            mAddress = hPlaceDetails.get("vicinity");
+          /*  mAddress = hPlaceDetails.get("vicinity");
             String lat = hPlaceDetails.get("lat");
             String lng = hPlaceDetails.get("lng");
             // mAddress = hPlaceDetails.get("formatted_address");
-            mPhone = hPlaceDetails.get("formatted_phone");
+
             //  mWebsite = hPlaceDetails.get("website");
             mRating = Float.parseFloat(hPlaceDetails.get("rating"));
             //   mInterPhone = hPlaceDetails.get("international_phone_number");
-            String url = hPlaceDetails.get("url");
-            String temp = "day";
-            if (hPlaceDetails.get(temp + 0) != null)
-                for (int i = 0; i < 7; i++) {
-                    mWeekDays.add(hPlaceDetails.get(temp + i));
-                }
+
+
             mReview = hPlaceDetails.get("review");
             ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
             setupViewPager(viewPager);
@@ -264,6 +313,6 @@ public class UserProfile extends AppCompatActivity implements TabFragment.OnList
             assert tabLayout != null;
             tabLayout.setupWithViewPager(viewPager);
         }
-    }
+    }*/
 
 }

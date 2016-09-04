@@ -27,6 +27,23 @@ public class Content {
     public static final List<ContentItem> ITEMS_MP = new ArrayList<ContentItem>();
     public static final List<ContentItem> ITEMS_EXP = new ArrayList<ContentItem>();
     public static String mClinicItem1[];
+
+    public  static  String[] web = {
+            "Pethood",
+            "Photography",
+            "Motherhood",
+            "Science",
+            "Fine Art",
+            "Fitness",
+            "Music",
+            "Film Making",
+            "Computer Science",
+            "Nature",
+            "Social Science",
+            "International Languages",
+            "Mathematics"
+
+    } ;
     /**
      * A map of sample (dummy) items, by ID.
      */
@@ -48,7 +65,6 @@ public class Content {
         micon[1] = R.drawable.add_user;
         micon[2] = R.drawable.location;
         micon[3] = R.drawable.budget;
-
 
         mContentItem[0] = "Availability";
         mContentItem[1] = "# Visits";
